@@ -1,0 +1,41 @@
+spring:
+  config:
+    import: classpath:.env.properties
+  datasource:
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:link_shortener}
+    username: ${POSTGRES_USER:app}
+    password: ${POSTGRES_PASSWORD:app}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    locations: classpath:db/migration
+    schemas: public
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:link_shortener}
+    user: ${POSTGRES_USER:app}
+    password: ${POSTGRES_PASSWORD:app}
+
+  data:
+    redis:
+      host: localhost
+      port: ${REDIS_PORT:6379}
+      # password:
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1d
+server:
+  port: 8080
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+
+
