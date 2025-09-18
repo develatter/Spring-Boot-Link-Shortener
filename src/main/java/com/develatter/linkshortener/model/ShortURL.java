@@ -1,9 +1,7 @@
 package com.develatter.linkshortener.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 
@@ -15,8 +13,11 @@ import java.time.OffsetDateTime;
                 @UniqueConstraint(name = "uk_custom_alias", columnNames = "custom_alias")
         }
 )
+@Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShortURL {
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
