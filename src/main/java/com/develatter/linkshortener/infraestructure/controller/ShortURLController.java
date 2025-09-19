@@ -17,7 +17,6 @@ import java.time.OffsetDateTime;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api")
 public class ShortURLController {
 
     private final ShortenURLUseCase shortenURLUseCase;
