@@ -1,6 +1,8 @@
 package com.develatter.linkshortener.application.service;
 
+import com.develatter.linkshortener.application.port.in.ResolveShortURLUseCase;
 import com.develatter.linkshortener.application.port.in.ShortenURLUseCase;
+import com.develatter.linkshortener.application.port.out.ResolveShortURLPort;
 import com.develatter.linkshortener.application.port.out.ShortenURLPort;
 import com.develatter.linkshortener.application.service.exception.CustomAliasAlreadyExistsException;
 import com.develatter.linkshortener.application.service.exception.ShortCodeCollisionException;
@@ -11,17 +13,17 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class ShortURLService implements ShortenURLUseCase {
+public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCase {
 
     private final ShortenURLPort shortenURLPort;
+    private final ResolveShortURLPort resolveShortURLPort;
 
 
     @Autowired
-    public ShortURLService(ShortenURLPort shortenURLPort) {
+    public ShortURLService(ShortenURLPort shortenURLPort, ResolveShortURLPort resolveShortURLPort) {
+        this.resolveShortURLPort = resolveShortURLPort;
         this.shortenURLPort = shortenURLPort;
     }
-
-
 
 
     @Override
@@ -61,5 +63,15 @@ public class ShortURLService implements ShortenURLUseCase {
             );
             return shortenURLPort.save(urlWithCode);
         }
+    }
+
+    @Override
+    public String resolveWithCode(String code) {
+        return resolveShortURLPort.findOriginalURLByShortCode(code);
+    }
+
+    @Override
+    public String resolveWithAlias(String alias) {
+        return resolveShortURLPort.findOriginalURLByCustomAliasIgnoreCase(alias);
     }
 }

@@ -1,11 +1,12 @@
 package com.develatter.linkshortener.infraestructure.persistence.shorturl;
 
+import com.develatter.linkshortener.application.port.out.ResolveShortURLPort;
 import com.develatter.linkshortener.application.port.out.ShortenURLPort;
 import com.develatter.linkshortener.domain.model.ShortURL;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JpaShortURLRepositoryAdapter implements ShortenURLPort {
+public class JpaShortURLRepositoryAdapter implements ShortenURLPort, ResolveShortURLPort {
     private final SpringDataShortURLRepository repository;
 
     public JpaShortURLRepositoryAdapter(SpringDataShortURLRepository repository) {
@@ -44,5 +45,19 @@ public class JpaShortURLRepositoryAdapter implements ShortenURLPort {
     @Override
     public boolean existsByCustomAliasIgnoreCase(String customAlias) {
         return repository.existsByCustomAliasIgnoreCase(customAlias);
+    }
+
+    @Override
+    public String findOriginalURLByShortCode(String shortCode) {
+        return repository.findShortURLByShortCode(shortCode).orElseThrow(
+                () -> new IllegalArgumentException("Short code not found")
+        ).getLongUrl();
+    }
+
+    @Override
+    public String findOriginalURLByCustomAliasIgnoreCase(String customAlias) {
+        return repository.findShortURLByCustomAliasIgnoreCase(customAlias).orElseThrow(
+                () -> new IllegalArgumentException("Custom alias not found")
+        ).getLongUrl();
     }
 }

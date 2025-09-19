@@ -1,5 +1,6 @@
 package com.develatter.linkshortener.infraestructure.controller;
 
+import com.develatter.linkshortener.application.port.in.ResolveShortURLUseCase;
 import com.develatter.linkshortener.application.port.in.ShortenURLUseCase;
 import com.develatter.linkshortener.domain.model.ShortURL;
 import com.develatter.linkshortener.domain.service.ShortCodeGeneratorService;
@@ -10,25 +11,25 @@ import com.develatter.linkshortener.application.service.exception.ShortCodeColli
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
 
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/shorten")
+@RequestMapping("/api")
 public class ShortURLController {
 
     private final ShortenURLUseCase shortenURLUseCase;
+    private final ResolveShortURLUseCase resolveShortURLUseCase;
 
-    public ShortURLController(ShortenURLUseCase shortenURLUseCase) {
+    public ShortURLController(ShortenURLUseCase shortenURLUseCase, ResolveShortURLUseCase resolveShortURLUseCase) {
         this.shortenURLUseCase = shortenURLUseCase;
+        this.resolveShortURLUseCase = resolveShortURLUseCase;
     }
 
-    @PostMapping()
+
+    @PostMapping("/shorten")
     public ResponseEntity<ShortURLResponse> shorten(
             @Valid
             @RequestBody
@@ -63,5 +64,22 @@ public class ShortURLController {
     @ExceptionHandler(ShortCodeCollisionException.class)
     public ResponseEntity<String> handleShortCodeCollision(ShortCodeCollisionException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+
+    @GetMapping("/s/{code}")
+    public ResponseEntity<String> resolveWithShortCode(@PathVariable  String code) {
+        String longUrl = resolveShortURLUseCase.resolveWithCode(code);
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT)
+                .header("Location", longUrl)
+                .build();
+    }
+
+    @GetMapping("/a/{customAlias}")
+    public ResponseEntity<String> resolveWithCustomAlias(@PathVariable String customAlias) {
+        String longUrl = resolveShortURLUseCase.resolveWithAlias(customAlias);
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT)
+                .header("Location", longUrl)
+                .build();
     }
 }
