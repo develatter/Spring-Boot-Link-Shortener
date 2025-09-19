@@ -1,4 +1,4 @@
-package com.develatter.linkshortener.model;
+package com.develatter.linkshortener.infraestructure.persistence.shorturl;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShortURL {
+public class ShortURLEntity {
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 

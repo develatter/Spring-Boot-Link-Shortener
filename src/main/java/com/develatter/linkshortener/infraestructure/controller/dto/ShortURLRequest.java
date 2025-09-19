@@ -1,4 +1,4 @@
-package com.develatter.linkshortener.dto;
+package com.develatter.linkshortener.infraestructure.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
