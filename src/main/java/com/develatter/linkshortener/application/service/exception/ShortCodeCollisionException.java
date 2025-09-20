@@ -2,7 +2,7 @@ package com.develatter.linkshortener.application.service.exception;
 
 public class ShortCodeCollisionException extends RuntimeException {
     public ShortCodeCollisionException() {
-        super("Shortcode couldn't be generated.");
+        super("Short code couldn't be generated.");
     }
 }
 

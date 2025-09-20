@@ -36,7 +36,7 @@ public class ShortURLController {
     ) {
         final ShortURL shortURL = new ShortURL(
                 null,
-                ShortCodeGeneratorService.genShortCode(),
+               null,
                 request.longURL(),
                 request.customAlias(),
                 true,
@@ -55,16 +55,6 @@ public class ShortURLController {
         return ResponseEntity.ok(response);
     }
 
-    @ExceptionHandler(CustomAliasAlreadyExistsException.class)
-    public ResponseEntity<String> handleCustomAliasExists(CustomAliasAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(ShortCodeCollisionException.class)
-    public ResponseEntity<String> handleShortCodeCollision(ShortCodeCollisionException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
 
     @GetMapping("/s/{code}")
     public ResponseEntity<String> resolveWithShortCode(@PathVariable  String code) {
@@ -81,4 +71,5 @@ public class ShortURLController {
                 .header("Location", longUrl)
                 .build();
     }
+
 }

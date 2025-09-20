@@ -1,7 +1,5 @@
 package com.develatter.linkshortener.domain.service;
 
-import java.util.Objects;
-
 public class ShortCodeGeneratorService {
 
     public static String genShortCode() {
