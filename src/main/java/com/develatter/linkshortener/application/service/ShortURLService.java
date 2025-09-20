@@ -29,7 +29,7 @@ public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCas
     public ShortURL createShortURL(ShortURL url) {
         final int MAX_RETRIES = 5;
 
-        if (!(url.customAlias() == null || url.customAlias().isBlank())
+        if (!(url.customAlias() == null  || url.customAlias().isBlank())
                 && shortenURLPort.existsByCustomAliasIgnoreCase(url.customAlias())
         ) {
             throw new CustomAliasAlreadyExistsException(url.customAlias());
