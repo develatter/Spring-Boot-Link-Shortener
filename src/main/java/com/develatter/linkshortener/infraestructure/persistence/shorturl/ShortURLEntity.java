@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.OffsetDateTime;
 
+/**
+ * Entity representing a shortened URL.
+ * This entity is mapped to the "short_url" table in the database.
+ */
 @Entity
 @Table(
         name = "short_url",

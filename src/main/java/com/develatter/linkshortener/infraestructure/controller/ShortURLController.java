@@ -3,11 +3,8 @@ package com.develatter.linkshortener.infraestructure.controller;
 import com.develatter.linkshortener.application.port.in.ResolveShortURLUseCase;
 import com.develatter.linkshortener.application.port.in.ShortenURLUseCase;
 import com.develatter.linkshortener.domain.model.ShortURL;
-import com.develatter.linkshortener.domain.service.ShortCodeGeneratorService;
 import com.develatter.linkshortener.infraestructure.controller.dto.ShortURLRequest;
 import com.develatter.linkshortener.infraestructure.controller.dto.ShortURLResponse;
-import com.develatter.linkshortener.application.service.exception.CustomAliasAlreadyExistsException;
-import com.develatter.linkshortener.application.service.exception.ShortCodeCollisionException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
 
-@CrossOrigin(origins = "*")
+/**
+ * REST controller for handling URL shortening and redirection.
+ */
 @RestController
 public class ShortURLController {
 
     private final ShortenURLUseCase shortenURLUseCase;
     private final ResolveShortURLUseCase resolveShortURLUseCase;
 
+    /**
+     * Constructor for ShortURLController.
+     * @param shortenURLUseCase use case for shortening URLs
+     * @param resolveShortURLUseCase use case for resolving short URLs
+     */
     public ShortURLController(ShortenURLUseCase shortenURLUseCase, ResolveShortURLUseCase resolveShortURLUseCase) {
         this.shortenURLUseCase = shortenURLUseCase;
         this.resolveShortURLUseCase = resolveShortURLUseCase;
     }
 
 
+    /**
+     * Endpoint to create a shortened URL.
+     * @param request the request body containing the long URL and optional custom alias and expiration
+     * @return the response entity with the created short URL details
+     */
     @PostMapping("/shorten")
     public ResponseEntity<ShortURLResponse> shorten(
             @Valid
@@ -56,6 +65,11 @@ public class ShortURLController {
     }
 
 
+    /**
+     * Endpoint to resolve a short URL using its short code.
+     * @param code the short code of the URL
+     * @return a redirect response to the original long URL
+     */
     @GetMapping("/s/{code}")
     public ResponseEntity<String> resolveWithShortCode(@PathVariable  String code) {
         String longUrl = resolveShortURLUseCase.resolveWithCode(code);
@@ -64,6 +78,11 @@ public class ShortURLController {
                 .build();
     }
 
+    /**
+     * Endpoint to resolve a short URL using its custom alias.
+     * @param customAlias the custom alias of the URL
+     * @return a redirect response to the original long URL
+     */
     @GetMapping("/a/{customAlias}")
     public ResponseEntity<String> resolveWithCustomAlias(@PathVariable String customAlias) {
         String longUrl = resolveShortURLUseCase.resolveWithAlias(customAlias);

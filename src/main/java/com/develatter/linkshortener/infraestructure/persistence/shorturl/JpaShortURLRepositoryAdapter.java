@@ -6,11 +6,13 @@ import com.develatter.linkshortener.application.service.exception.CustomAliasNot
 import com.develatter.linkshortener.application.service.exception.ShortCodeNotFoundException;
 import com.develatter.linkshortener.domain.model.ShortURL;
 import jakarta.transaction.Transactional;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-
+/**
+ * JPA implementation of the ShortenURLPort and ResolveShortURLPort interfaces.
+ * This class interacts with the database to save and retrieve ShortURL entities.
+ */
 @Repository
 public class JpaShortURLRepositoryAdapter implements ShortenURLPort, ResolveShortURLPort {
     private final SpringDataShortURLRepository repository;

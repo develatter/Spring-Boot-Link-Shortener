@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * Service class implementing URL shortening and resolution use cases.
+ */
 @Service
 public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCase {
 
@@ -19,7 +22,10 @@ public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCas
 
 
     @Autowired
-    public ShortURLService(ShortenURLPort shortenURLPort, ResolveShortURLPort resolveShortURLPort) {
+    public ShortURLService(
+            ShortenURLPort shortenURLPort,
+            ResolveShortURLPort resolveShortURLPort
+    ) {
         this.resolveShortURLPort = resolveShortURLPort;
         this.shortenURLPort = shortenURLPort;
     }
@@ -29,8 +35,8 @@ public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCas
     public ShortURL createShortURL(ShortURL url) {
         final int MAX_RETRIES = 5;
 
-        if (!(url.customAlias() == null  || url.customAlias().isBlank())
-                && shortenURLPort.existsByCustomAliasIgnoreCase(url.customAlias())
+        if (!(url.customAlias() == null || url.customAlias().isBlank())
+                && resolveShortURLPort.existsByCustomAliasIgnoreCase(url.customAlias())
         ) {
             throw new CustomAliasAlreadyExistsException(url.customAlias());
         }
@@ -53,10 +59,15 @@ public class ShortURLService implements ShortenURLUseCase, ResolveShortURLUseCas
     }
 
 
+    /**
+     * Generates a unique short code, retrying up to maxRetries times in case of collisions.
+     * @param maxRetries the maximum number of retries to attempt
+     * @return a unique short code
+     */
     private String generateUniqueShortCode(int maxRetries) {
         for (int attempts = 0; attempts < maxRetries; attempts++) {
             String shortCode = ShortCodeGeneratorService.genShortCode();
-            if (!shortenURLPort.existsByShortCode(shortCode)) {
+            if (!resolveShortURLPort.existsByShortCode(shortCode)) {
                 return shortCode;
             }
         }
