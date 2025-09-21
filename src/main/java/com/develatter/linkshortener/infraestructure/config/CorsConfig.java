@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     public static final String[] ALLOWED_ORIGINS = {
-            "http://localhost:3000",
+            "http://localhost:5173",
             "http://localhost:8080",
             "https://www.develatter.com",
     };
